@@ -1,6 +1,6 @@
 adb:
-  path: "C:/MuMu/emulator/nemu/EmulatorShell/adb.exe"
-  device_id: "emulator-5554"
+  path: "D:/Program Files (x86)/MuMuPlayer/nx_main/adb.exe"
+  device_id: "127.0.0.1:16384"
 
 game:
   screen_width: 1920
