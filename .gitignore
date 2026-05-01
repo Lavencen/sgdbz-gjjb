@@ -18,6 +18,9 @@ Thumbs.db
 # Logs
 logs/
 
+# Git worktrees
+.worktrees/
+
 # Data (SQLite)
 data/
 
