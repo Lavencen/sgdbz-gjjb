@@ -15,9 +15,13 @@ class ADBController:
         return result.stdout.strip()
 
     def check_device(self) -> bool:
-        result = subprocess.run(
-            [self.adb_path, "devices"], capture_output=True, text=True
-        )
+        try:
+            result = subprocess.run(
+                [self.adb_path, "devices"], capture_output=True, text=True
+            )
+        except FileNotFoundError:
+            return False
+
         for line in result.stdout.splitlines():
             if line.startswith(self.device_id) and "\tdevice" in line:
                 return True

@@ -26,6 +26,11 @@ class TestADBController:
             adb = ADBController("adb", "emulator-5554")
             assert adb.check_device() is False
 
+    def test_check_device_returns_false_when_adb_missing(self):
+        with patch("subprocess.run", side_effect=FileNotFoundError):
+            adb = ADBController("missing-adb", "emulator-5554")
+            assert adb.check_device() is False
+
     def test_tap_sends_correct_command(self):
         with patch("subprocess.run") as mock_run:
             adb = ADBController("adb", "emulator-5554")
