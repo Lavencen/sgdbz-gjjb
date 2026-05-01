@@ -1,0 +1,26 @@
+adb:
+  path: "C:/MuMu/emulator/nemu/EmulatorShell/adb.exe"
+  device_id: "emulator-5554"
+
+game:
+  screen_width: 1920
+  screen_height: 1080
+
+blessing:
+  like_button_x: 540
+  like_button_y: 960
+  success_template: "templates/success.png"
+  blessing_template: "templates/blessing_icon.png"
+
+loop:
+  detect_interval: 2
+  not_found_wait: 60
+  success_cooldown: 5
+
+agent:
+  name: "pc-home"
+  mode: "standalone"
+
+server:
+  url: "wss://your-domain.com/ws"
+  token: "placeholder-token"
