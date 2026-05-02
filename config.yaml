@@ -1,0 +1,26 @@
+adb:
+  path: "D:/Program Files (x86)/MuMuPlayer/nx_main/adb.exe"
+  device_id: "127.0.0.1:16384"
+
+game:
+  screen_width: 1920
+  screen_height: 1080
+
+blessing:
+  like_button_x: 978
+  like_button_y: 1529
+  success_template: "templates/success.png"
+  blessing_template: "templates/like_button.png"
+
+loop:
+  detect_interval: 2
+  not_found_wait: 60
+  success_cooldown: 5
+
+agent:
+  name: "pc-home"
+  mode: "standalone"
+
+server:
+  url: "wss://your-domain.com/ws"
+  token: "placeholder-token"
