@@ -38,9 +38,10 @@ class BlessingTask:
         )
 
         if success:
+            time.sleep(1)
             self.adb.tap(
                 self.config.game.screen_width // 2,
-                self.config.game.screen_height // 2,
+                self.config.game.screen_height * 3 // 4,
             )
             return TaskStatus.SUCCESS, "点赞成功", screenshot2
         return TaskStatus.FAILED, "点赞后未检测到成功提示", screenshot2

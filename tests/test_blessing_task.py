@@ -100,7 +100,8 @@ class TestBlessingTask:
         assert screenshot == success_path
         assert mock_adb.tap.call_count == 2
         mock_adb.tap.assert_any_call(200, 300)
-        mock_adb.tap.assert_any_call(960, 540)
+        mock_adb.tap.assert_any_call(960, 810)
+        assert _.call_args_list[-1].args[0] == 1
 
     @patch("agent.blessing_task.time.sleep", return_value=None)
     def test_failed_when_success_not_confirmed(self, _):
