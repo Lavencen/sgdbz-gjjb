@@ -61,3 +61,29 @@ class TestMatchTemplate:
         )
         assert matched is False
         assert center is None
+
+    def test_scaled_template_returns_true(self):
+        screen = np.zeros((600, 800, 3), dtype=np.uint8)
+        screen[:] = (128, 128, 128)
+        template = np.zeros((40, 40, 3), dtype=np.uint8)
+        template[:] = (255, 0, 0)
+        cv2.circle(template, (20, 20), 10, (0, 255, 0), -1)
+        scaled = cv2.resize(template, None, fx=1.35, fy=1.35, interpolation=cv2.INTER_CUBIC)
+        x, y = 500, 300
+        h, w = scaled.shape[:2]
+        screen[y : y + h, x : x + w] = scaled
+
+        screen_path = Path(tempfile.gettempdir()) / "test_scaled_screen.png"
+        tmpl_path = Path(tempfile.gettempdir()) / "test_scaled_tmpl.png"
+        cv2.imwrite(str(screen_path), screen)
+        cv2.imwrite(str(tmpl_path), template)
+        try:
+            matched, center = match_template(screen_path, tmpl_path, threshold=0.9)
+            assert matched is True
+            assert center is not None
+            cx, cy = center
+            assert abs(cx - (x + w // 2)) < 5
+            assert abs(cy - (y + h // 2)) < 5
+        finally:
+            screen_path.unlink(missing_ok=True)
+            tmpl_path.unlink(missing_ok=True)

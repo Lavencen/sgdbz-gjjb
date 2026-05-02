@@ -7,10 +7,10 @@ game:
   screen_height: 1080
 
 blessing:
-  like_button_x: 540
-  like_button_y: 960
+  like_button_x: 978
+  like_button_y: 1529
   success_template: "templates/success.png"
-  blessing_template: "templates/blessing_icon.png"
+  blessing_template: "templates/like_button.png"
 
 loop:
   detect_interval: 2
