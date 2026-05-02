@@ -14,7 +14,7 @@ blessing:
 
 loop:
   detect_interval: 2
-  not_found_wait: 60
+  not_found_wait: 15
   success_cooldown: 5
 
 agent:
