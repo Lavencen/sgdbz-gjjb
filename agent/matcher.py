@@ -1,7 +1,16 @@
+from dataclasses import dataclass
 from pathlib import Path
 
 import cv2
 import numpy as np
+
+
+@dataclass(frozen=True)
+class TemplateMatch:
+    matched: bool
+    confidence: float
+    center: tuple[int, int] | None
+    scale: float | None
 
 
 def match_template(
@@ -9,16 +18,25 @@ def match_template(
     template_path: Path,
     threshold: float = 0.85,
 ) -> tuple[bool, tuple[int, int] | None]:
+    result = locate_template(screenshot_path, template_path, threshold)
+    return result.matched, result.center
+
+
+def locate_template(
+    screenshot_path: Path,
+    template_path: Path,
+    threshold: float = 0.85,
+) -> TemplateMatch:
     screen = cv2.imread(str(screenshot_path))
     template = cv2.imread(str(template_path))
 
     if screen is None or template is None:
-        return False, None
+        return TemplateMatch(False, 0.0, None, None)
 
     if template.shape[0] <= screen.shape[0] and template.shape[1] <= screen.shape[1]:
         score, center = _score_template(screen, template)
         if score >= threshold:
-            return True, center
+            return TemplateMatch(True, score, center, 1.0)
 
     best = (float("-inf"), None, None)
     for scale in (0.75, 0.85, 0.95, 1.05, 1.15, 1.25, 1.3, 1.35, 1.4, 1.5):
@@ -31,8 +49,9 @@ def match_template(
             best = (score, center, scale)
 
     if best[0] >= threshold:
-        return True, best[1]
-    return False, None
+        return TemplateMatch(True, float(best[0]), best[1], best[2])
+    confidence = 0.0 if best[0] == float("-inf") else float(best[0])
+    return TemplateMatch(False, confidence, None, best[2])
 
 
 def _resize_template(template, scale: float):

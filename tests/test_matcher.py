@@ -87,3 +87,29 @@ class TestMatchTemplate:
         finally:
             screen_path.unlink(missing_ok=True)
             tmpl_path.unlink(missing_ok=True)
+
+    def test_locate_template_returns_confidence_and_center(self):
+        from agent.matcher import locate_template
+
+        screen = np.zeros((600, 800, 3), dtype=np.uint8)
+        screen[:] = (128, 128, 128)
+        template = np.zeros((40, 40, 3), dtype=np.uint8)
+        template[:] = (255, 0, 0)
+        cv2.circle(template, (20, 20), 10, (0, 255, 0), -1)
+        x, y = 320, 240
+        screen[y : y + 40, x : x + 40] = template
+
+        screen_path = Path(tempfile.gettempdir()) / "test_locate_screen.png"
+        tmpl_path = Path(tempfile.gettempdir()) / "test_locate_tmpl.png"
+        cv2.imwrite(str(screen_path), screen)
+        cv2.imwrite(str(tmpl_path), template)
+        try:
+            result = locate_template(screen_path, tmpl_path, threshold=0.9)
+            assert result.matched is True
+            assert result.center is not None
+            assert result.confidence >= 0.9
+            assert abs(result.center[0] - (x + 20)) < 5
+            assert abs(result.center[1] - (y + 20)) < 5
+        finally:
+            screen_path.unlink(missing_ok=True)
+            tmpl_path.unlink(missing_ok=True)
