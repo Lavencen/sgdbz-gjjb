@@ -1,0 +1,24 @@
+﻿rules:
+  blessing_reward_page:
+    priority: 110
+    detect:
+      template: "templates/success.png"
+      threshold: 0.85
+    actions:
+      - wait: 1
+      - tap_ratio: [0.5, 0.75]
+    waits:
+      success: 5
+      failed: 5
+
+  blessing_like_page:
+    priority: 100
+    detect:
+      template: "templates/like_button.png"
+      threshold: 0.85
+    actions:
+      - tap: [978, 1529]
+      - wait: 2
+    waits:
+      success: 2
+      failed: 5
