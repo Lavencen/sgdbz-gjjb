@@ -6,6 +6,9 @@ from agent.adb import ADBController
 from agent.config import Config
 from agent.matcher import match_template
 
+# Compatibility fallback for the pre-state-machine blessing flow.
+# New automation states should be implemented through rules.yaml or handlers.
+
 
 class TaskStatus(Enum):
     SUCCESS = "success"
