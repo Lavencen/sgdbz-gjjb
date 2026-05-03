@@ -3,8 +3,8 @@ adb:
   device_id: "127.0.0.1:16384"
 
 game:
-  screen_width: 1920
-  screen_height: 1080
+  screen_width: 1080
+  screen_height: 1920
 
 blessing:
   like_button_x: 978

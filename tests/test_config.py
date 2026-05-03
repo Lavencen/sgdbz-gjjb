@@ -95,3 +95,8 @@ agent:
             assert cfg.server.token == ""
         finally:
             os.unlink(path)
+
+    def test_default_config_uses_portrait_mumu_coordinates(self):
+        cfg = load_config()
+        assert cfg.game.screen_width == 1080
+        assert cfg.game.screen_height == 1920
