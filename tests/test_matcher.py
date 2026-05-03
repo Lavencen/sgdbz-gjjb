@@ -113,3 +113,31 @@ class TestMatchTemplate:
         finally:
             screen_path.unlink(missing_ok=True)
             tmpl_path.unlink(missing_ok=True)
+
+    def test_locate_template_reports_best_unmatched_confidence(self, monkeypatch):
+        from agent import matcher
+
+        screen = np.zeros((20, 20, 3), dtype=np.uint8)
+        template = np.zeros((4, 4, 3), dtype=np.uint8)
+        screen_path = Path(tempfile.gettempdir()) / "test_best_conf_screen.png"
+        tmpl_path = Path(tempfile.gettempdir()) / "test_best_conf_tmpl.png"
+        cv2.imwrite(str(screen_path), screen)
+        cv2.imwrite(str(tmpl_path), template)
+
+        scores = iter([(0.8, (2, 2)), (0.5, (3, 3))])
+
+        def fake_score_template(screen_image, template_image):
+            try:
+                return next(scores)
+            except StopIteration:
+                return 0.5, (3, 3)
+
+        monkeypatch.setattr(matcher, "_score_template", fake_score_template)
+        try:
+            result = matcher.locate_template(screen_path, tmpl_path, threshold=0.9)
+            assert result.matched is False
+            assert result.confidence == 0.8
+            assert result.scale == 1.0
+        finally:
+            screen_path.unlink(missing_ok=True)
+            tmpl_path.unlink(missing_ok=True)

@@ -33,12 +33,13 @@ def locate_template(
     if screen is None or template is None:
         return TemplateMatch(False, 0.0, None, None)
 
+    best = (float("-inf"), None, None)
     if template.shape[0] <= screen.shape[0] and template.shape[1] <= screen.shape[1]:
         score, center = _score_template(screen, template)
+        best = (score, center, 1.0)
         if score >= threshold:
             return TemplateMatch(True, score, center, 1.0)
 
-    best = (float("-inf"), None, None)
     for scale in (0.75, 0.85, 0.95, 1.05, 1.15, 1.25, 1.3, 1.35, 1.4, 1.5):
         candidate = _resize_template(template, scale)
         if candidate.shape[0] > screen.shape[0] or candidate.shape[1] > screen.shape[1]:
