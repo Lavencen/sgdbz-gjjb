@@ -48,7 +48,10 @@ class YAMLRule:
 def load_rules(path: str | Path = "rules.yaml") -> list[YAMLRule]:
     rules_path = Path(path)
     with open(rules_path, "r", encoding="utf-8") as f:
-        data = yaml.safe_load(f) or {}
+        data = yaml.safe_load(f)
+
+    if data is None:
+        data = {}
 
     if not isinstance(data, dict):
         raise ValueError("rules.yaml root mapping is required")

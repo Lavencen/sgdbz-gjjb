@@ -73,6 +73,9 @@ rules:
     ("yaml_text", "expected_message"),
     [
         ("- rules\n- nope\n", "root mapping"),
+        ("[]\n", "root mapping"),
+        ("false\n", "root mapping"),
+        ("0\n", "root mapping"),
         ("plain scalar\n", "root mapping"),
         (
             """
