@@ -23,7 +23,20 @@ class Engine:
         self.sleeper = sleeper
 
     def run_once(self) -> ActionResult:
-        screenshot = self.adb.screencap()
+        try:
+            screenshot = self.adb.screencap()
+        except Exception as exc:
+            result = ActionResult(
+                status=ResultStatus.FAILED,
+                detail=f"capture failed: {exc}",
+                screenshot=None,
+                next_wait=self.config.loop.not_found_wait,
+                state="capture",
+                confidence=0.0,
+            )
+            self._log(result)
+            return result
+
         ctx = AgentContext(
             adb=self.adb,
             config=self.config,

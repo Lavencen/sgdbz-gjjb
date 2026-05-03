@@ -120,3 +120,16 @@ def test_run_once_converts_handler_exception_to_failed_result():
     assert result.status == ResultStatus.FAILED
     assert result.state == "broken"
     assert "tap failed" in result.detail
+
+
+def test_run_once_converts_capture_exception_to_failed_result():
+    engine = _make_engine([])
+    engine.adb.screencap.side_effect = RuntimeError("capture failed")
+
+    result = engine.run_once()
+
+    assert result.status == ResultStatus.FAILED
+    assert result.state == "capture"
+    assert "capture failed" in result.detail
+    assert result.next_wait == 15
+    engine.logger.log.assert_called_once()
