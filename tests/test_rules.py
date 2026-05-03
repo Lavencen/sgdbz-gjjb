@@ -1,6 +1,8 @@
 ﻿from pathlib import Path
 from unittest.mock import MagicMock
 
+import pytest
+
 from agent.rules import YAMLRule, load_rules
 from agent.state import AgentContext, ResultStatus
 
@@ -65,6 +67,65 @@ rules:
         assert "templates/missing.png" in str(exc)
     else:
         raise AssertionError("expected FileNotFoundError")
+
+
+@pytest.mark.parametrize(
+    ("yaml_text", "expected_message"),
+    [
+        ("- rules\n- nope\n", "root mapping"),
+        ("plain scalar\n", "root mapping"),
+        (
+            """
+rules:
+  bad: "not a mapping"
+""",
+            "rule 'bad' must be a mapping",
+        ),
+        (
+            """
+rules:
+  bad:
+    detect: "not a mapping"
+    actions:
+      - wait: 1
+""",
+            "rule 'bad' detect must be a mapping",
+        ),
+        (
+            """
+rules:
+  bad:
+    detect:
+      template: "templates/like.png"
+    actions:
+      wait: 1
+""",
+            "rule 'bad' actions must be a list",
+        ),
+        (
+            """
+rules:
+  bad:
+    detect:
+      template: "templates/like.png"
+    actions:
+      - wait: 1
+    waits:
+      - success
+""",
+            "rule 'bad' waits must be a mapping",
+        ),
+    ],
+)
+def test_load_rules_rejects_malformed_yaml_shapes(tmp_path, yaml_text, expected_message):
+    templates = tmp_path / "templates"
+    templates.mkdir()
+    (templates / "like.png").write_bytes(b"fake")
+    rules_file = tmp_path / "rules.yaml"
+    rules_file.write_text(yaml_text, encoding="utf-8")
+
+    with pytest.raises(ValueError, match=expected_message):
+        load_rules(rules_file)
 
 
 def test_yaml_rule_detect_returns_state_match():
