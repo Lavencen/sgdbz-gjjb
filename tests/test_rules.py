@@ -45,6 +45,11 @@ rules:
     assert rules[1].actions == [{"tap": [1, 2]}]
 
 
+def test_default_reward_rule_waits_two_seconds_after_success():
+    reward_rule = next(rule for rule in load_rules() if rule.name == "blessing_reward_page")
+    assert reward_rule.waits["success"] == 2
+
+
 def test_load_rules_rejects_missing_template(tmp_path):
     rules_file = tmp_path / "rules.yaml"
     rules_file.write_text(
