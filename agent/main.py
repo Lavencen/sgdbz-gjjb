@@ -14,19 +14,19 @@ def main():
     adb = ADBController(cfg.adb.path, cfg.adb.device_id)
 
     if not adb.check_device():
-        logger.log("startup", "error", f"ADB device not connected: {cfg.adb.device_id}")
-        print(f"[ERROR] ADB device {cfg.adb.device_id} not connected")
+        logger.log("startup", "error", f"ADB 设备未连接: {cfg.adb.device_id}")
+        print(f"[错误] ADB 设备未连接: {cfg.adb.device_id}")
         sys.exit(1)
 
     rules = load_rules()
     engine = Engine(adb=adb, config=cfg, logger=logger, handlers=rules)
 
-    print(f"[INFO] Agent started, mode: {cfg.agent.mode}, device: {cfg.adb.device_id}")
-    logger.log("startup", "ok", f"mode={cfg.agent.mode} device={cfg.adb.device_id}")
+    print(f"[信息] 脚本已启动, 模式: {cfg.agent.mode}, 设备: {cfg.adb.device_id}")
+    logger.log("startup", "ok", f"模式={cfg.agent.mode} 设备={cfg.adb.device_id}")
 
     def handle_exit(sig, frame):
-        print("\n[INFO] Agent stopped")
-        logger.log("shutdown", "ok", "agent stopped")
+        print("\n[信息] 脚本已停止")
+        logger.log("shutdown", "ok", "脚本已停止")
         sys.exit(0)
 
     signal.signal(signal.SIGINT, handle_exit)

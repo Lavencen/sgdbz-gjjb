@@ -79,6 +79,7 @@ def test_run_once_returns_not_found_when_no_handler_matches():
     result = engine.run_once()
 
     assert result.status == ResultStatus.NOT_FOUND
+    assert result.detail == "未识别到匹配状态"
     assert result.next_wait == 15
     engine.logger.log.assert_called_once()
 
@@ -130,6 +131,24 @@ def test_run_once_converts_capture_exception_to_failed_result():
 
     assert result.status == ResultStatus.FAILED
     assert result.state == "capture"
+    assert "截图失败" in result.detail
     assert "capture failed" in result.detail
     assert result.next_wait == 15
     engine.logger.log.assert_called_once()
+
+
+def test_run_forever_prints_chinese_status_and_wait(capsys):
+    engine = _make_engine([FakeHandler("like", 100, 0.95, next_wait=2)])
+
+    def stop_after_wait(seconds):
+        raise KeyboardInterrupt
+
+    engine.sleeper = stop_after_wait
+
+    try:
+        engine.run_forever()
+    except KeyboardInterrupt:
+        pass
+
+    output = capsys.readouterr().out
+    assert "[成功] like: like handled, 等待 2s" in output

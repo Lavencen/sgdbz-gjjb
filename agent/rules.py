@@ -37,7 +37,7 @@ class YAMLRule:
         execute_actions(self.actions, ctx)
         return ActionResult(
             status=ResultStatus.SUCCESS,
-            detail=f"{self.name} actions executed",
+            detail=f"{self.name} 动作已执行",
             screenshot=match.screenshot,
             next_wait=self.waits.get("success"),
             state=self.name,

@@ -7,6 +7,14 @@ from agent.logger import Logger
 from agent.state import ActionResult, AgentContext, ResultStatus, StateMatch
 
 
+STATUS_LABELS = {
+    ResultStatus.SUCCESS: "成功",
+    ResultStatus.NOT_FOUND: "未识别",
+    ResultStatus.FAILED: "失败",
+    ResultStatus.SKIPPED: "跳过",
+}
+
+
 class Engine:
     def __init__(
         self,
@@ -28,7 +36,7 @@ class Engine:
         except Exception as exc:
             result = ActionResult(
                 status=ResultStatus.FAILED,
-                detail=f"capture failed: {exc}",
+                detail=f"截图失败: {exc}",
                 screenshot=None,
                 next_wait=self.config.loop.not_found_wait,
                 state="capture",
@@ -49,7 +57,7 @@ class Engine:
         if selected is None:
             result = ActionResult(
                 status=ResultStatus.NOT_FOUND,
-                detail="no state matched",
+                detail="未识别到匹配状态",
                 screenshot=screenshot,
                 next_wait=self.config.loop.not_found_wait,
                 state="unknown",
@@ -79,7 +87,8 @@ class Engine:
     def run_forever(self):
         while True:
             result = self.run_once()
-            print(f"[{result.status.value.upper()}] {result.state}: {result.detail}, wait {result.next_wait}s")
+            status_label = STATUS_LABELS.get(result.status, result.status.value)
+            print(f"[{status_label}] {result.state}: {result.detail}, 等待 {result.next_wait}s")
             self.sleeper(result.next_wait)
 
     def _select_handler(self, ctx: AgentContext):

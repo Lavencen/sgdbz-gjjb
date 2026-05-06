@@ -179,4 +179,5 @@ def test_yaml_rule_handle_executes_actions_and_returns_wait(monkeypatch):
     assert calls == [[{"wait": 1}, {"tap_ratio": [0.5, 0.75]}]]
     assert result.status == ResultStatus.SUCCESS
     assert result.state == "reward"
+    assert result.detail == "reward 动作已执行"
     assert result.next_wait == 5
